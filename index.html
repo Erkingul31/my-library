@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Моя библиотека</title>
+    <link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+
+    <header>
+        <h1>Моя библиотека</h1>
+        <p>Коллекция любимых книг</p>
+    </header>
+
+    <main>
+        <section class="add-section">
+            <h2>Добавить книгу</h2>
+
+            <form id="book-form">
+                <input
+                    type="text"
+                    name="title"
+                    placeholder="Название книги"
+                    required
+                >
+
+                <input
+                    type="text"
+                    name="author"
+                    placeholder="Автор"
+                    required
+                >
+
+                <input
+                    type="number"
+                    name="year"
+                    placeholder="Год издания"
+                    min="1"
+                    step="1"
+                    required
+                >
+
+                <label>
+                    <input type="checkbox" name="isRead">
+                    Прочитана
+                </label>
+
+                <button type="submit" id="add-button">
+                    Добавить книгу
+                </button>
+            </form>
+        </section>
+
+        <section class="filters">
+            <input
+                type="text"
+                id="search-input"
+                placeholder="Поиск по названию"
+            >
+
+            <select id="read-filter">
+                <option value="">Все книги</option>
+                <option value="true">Прочитанные</option>
+                <option value="false">Непрочитанные</option>
+            </select>
+
+            <select id="sort-by">
+                <option value="">Без сортировки</option>
+                <option value="year">По году</option>
+                <option value="title">По названию</option>
+            </select>
+
+            <select id="sort-order">
+                <option value="asc">По возрастанию</option>
+                <option value="desc">По убыванию</option>
+            </select>
+
+            <button type="button" id="load-more" hidden>
+                Загрузить ещё
+            </button>
+        </section>
+
+        <section id="books-container"></section>
+    </main>
+
+    <script type="module" src="./main.js"></script>
+</body>
+</html>

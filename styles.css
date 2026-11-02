@@ -1,0 +1,120 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f1ea;
+    color: #333;
+}
+
+header {
+    text-align: center;
+    padding: 30px;
+    background-color: #5b4636;
+    color: white;
+}
+
+header p {
+    margin-top: 10px;
+}
+
+h1 {
+    font-size: 32px;
+}
+
+main {
+    padding: 25px;
+}
+
+main section {
+    margin-bottom: 25px;
+}
+
+.add-section h2 {
+    margin-bottom: 15px;
+    color: #5b4636;
+}
+
+form,
+.filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    align-items: center;
+}
+
+input,
+select,
+button {
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 14px;
+}
+
+button {
+    background-color: #5b4636;
+    color: white;
+    border: none;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #80634c;
+}
+
+#books-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+    gap: 20px;
+    padding: 10px 0;
+}
+
+.book-card {
+    background-color: white;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+}
+
+.book-card h2 {
+    margin-bottom: 12px;
+    color: #5b4636;
+}
+
+.book-card p {
+    margin-bottom: 8px;
+}
+
+.book-card button {
+    margin: 5px 5px 0 0;
+}
+
+.empty {
+    font-size: 18px;
+    color: #80634c;
+    padding: 20px;
+}
+
+@media (max-width: 600px) {
+    main {
+        padding: 15px;
+    }
+
+    form,
+    .filters {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    form input,
+    form button,
+    .filters input,
+    .filters select,
+    .filters button {
+        width: 100%;
+    }
+}
