@@ -1,4 +1,3 @@
-
 const API = 'https://6ae8463a1a7b15aaa50edc35.mockapi.io/books';
 
 const request = async (url, method = 'GET', body) => {

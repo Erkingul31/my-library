@@ -19,7 +19,6 @@ let currentPage = 1;
 const limit = 5;
 let latestRequest = 0;
 let searchTimer;
-let allSortedBooks = [];
 
 function renderBook(book) {
     const card = document.createElement('div');
@@ -67,7 +66,7 @@ function renderBook(book) {
     return card;
 }
 
-function createQuery(page = currentPage, usePagination = true) {
+function createQuery(page = currentPage) {
     const params = new URLSearchParams();
 
     if (searchInput.value.trim()) {
@@ -78,34 +77,20 @@ function createQuery(page = currentPage, usePagination = true) {
         params.append('isRead', readFilter.value);
     }
 
-    if (usePagination) {
-        params.append('page', page);
-        params.append('limit', limit);
+    if (sortBy.value !== '') {
+        params.append('sortBy', sortBy.value);
+        params.append('order', sortOrder.value);
     }
+
+    params.append('page', page);
+    params.append('limit', limit);
 
     return `?${params.toString()}`;
 }
 
-function renderSortedBooks() {
-    const start = (currentPage - 1) * limit;
-    const visibleBooks = allSortedBooks.slice(start, start + limit);
-
-    booksContainer.innerHTML = '';
-
-    visibleBooks.forEach(book => {
-        booksContainer.append(renderBook(book));
-    });
-
-    loadMoreButton.hidden = start + limit >= allSortedBooks.length;
-
-    if (allSortedBooks.length === 0) {
-        booksContainer.innerHTML =
-            '<p class="empty">Ничего не найдено</p>';
-    }
-}
-
 async function loadBooks(more = false) {
     const requestId = ++latestRequest;
+    const nextPage = more ? currentPage + 1 : 1;
 
     if (!more) {
         currentPage = 1;
@@ -115,29 +100,7 @@ async function loadBooks(more = false) {
     loadMoreButton.hidden = true;
 
     try {
-        if (sortBy.value === 'year') {
-            const query = createQuery(1, false);
-
-            console.log('GET:', query);
-
-            const books = await getBooks(query);
-
-            if (requestId !== latestRequest) return;
-
-            allSortedBooks = [...books].sort((a, b) => {
-                const yearA = Number(a.year);
-                const yearB = Number(b.year);
-
-                return sortOrder.value === 'desc'
-                    ? yearB - yearA
-                    : yearA - yearB;
-            });
-
-            renderSortedBooks();
-            return;
-        }
-
-        const query = createQuery();
+        const query = createQuery(nextPage);
 
         console.log('GET:', query);
 
@@ -161,21 +124,23 @@ async function loadBooks(more = false) {
             booksContainer.append(renderBook(book));
         });
 
+        currentPage = nextPage;
+
         loadMoreButton.hidden = books.length < limit;
 
     } catch (error) {
         if (requestId !== latestRequest) return;
 
         if (error.message.includes('404')) {
-            if (more) {
-                loadMoreButton.hidden = true;
-            } else {
+            if (!more) {
                 booksContainer.innerHTML =
                     '<p class="empty">Ничего не найдено</p>';
             }
         } else {
-            booksContainer.innerHTML =
-                '<p class="empty">Ошибка загрузки книг</p>';
+            if (!more) {
+                booksContainer.innerHTML =
+                    '<p class="empty">Ошибка загрузки книг</p>';
+            }
 
             console.error('Ошибка загрузки:', error);
         }
@@ -212,6 +177,7 @@ async function editBook(book) {
     try {
         await updateBook(book.id, updatedBook);
         await loadBooks();
+
         console.log('Книга обновлена!');
     } catch (error) {
         console.error('Ошибка редактирования:', error);
@@ -306,13 +272,7 @@ sortBy.addEventListener('change', () => loadBooks());
 sortOrder.addEventListener('change', () => loadBooks());
 
 loadMoreButton.addEventListener('click', () => {
-    if (sortBy.value === 'year') {
-        currentPage++;
-        renderSortedBooks();
-    } else {
-        currentPage++;
-        loadBooks(true);
-    }
+    loadBooks(true);
 });
 
 loadBooks();
